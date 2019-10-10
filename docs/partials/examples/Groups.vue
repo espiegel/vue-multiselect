@@ -3,12 +3,14 @@ div
   label.typo__label Groups
   multiselect(
     v-model="value",
-    :options="options",
+    :options="filteredOptions",
     :multiple="true",
     group-values="libs",
     group-label="language",
     placeholder="Type to search",
     track-by="name",
+    :internal-search="false",
+    @search-change="searchChanged",
     label="name",
   )
     span(slot="noResult").
@@ -50,7 +52,18 @@ export default {
           ]
         }
       ],
+      filteredOptions: [],
       value: []
+    }
+  },
+  mounted () {
+    this.filteredOptions = this.options
+  },
+  methods: {
+    searchChanged (searchQuery, id) {
+      var newOptions = this.options.slice()
+      newOptions = newOptions.filter(option => option.language.toLowerCase().includes(searchQuery.toLowerCase()))
+      this.filteredOptions = newOptions
     }
   }
 }
